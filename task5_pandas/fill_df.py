@@ -1,5 +1,3 @@
-"""Задание 5: заполнить пропуски df1 значениями из df2, результат в int."""
-
 import pandas as pd
 
 d1 = {"a": [1, 2, 3], "b": [None, 5, 6], "c": [7, None, 9]}
@@ -10,10 +8,6 @@ df2 = pd.DataFrame(d2)
 
 
 def fill_from(target: pd.DataFrame, source: pd.DataFrame) -> pd.DataFrame:
-    """Заполняет NaN в target значениями source с тем же индексом и столбцом.
-
-    Столбцы, которых нет в target (например, 'd'), в результат не попадают.
-    """
     return target.fillna(source).astype(int)
 
 

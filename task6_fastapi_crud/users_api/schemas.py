@@ -11,8 +11,6 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(BaseModel):
-    """Частичное обновление: передаются только изменяемые поля."""
-
     name: str | None = Field(default=None, min_length=1, max_length=100)
     email: EmailStr | None = None
 

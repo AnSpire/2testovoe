@@ -5,7 +5,7 @@ requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard]>=0.143.3",
     "pandas>=3.0.6",
-    "pyjwt>=2.15.1",
+    "pyjwt[crypto]>=2.15.1",
 ]
 
 [dependency-groups]

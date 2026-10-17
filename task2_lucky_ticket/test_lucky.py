@@ -15,8 +15,8 @@ def brute_force(digits):
         ((1, 2, 3, 3, 2, 1), True),
         ((0, 0, 0, 0, 0, 0), True),
         ((9, 0, 0, 3, 3, 3), True),
-        ((1, 1, 1, 1, 1, 2), False),  # нечётная сумма
-        ((9, 9, 9, 0, 0, 0), False),  # сумма чётная, но разбить нельзя
+        ((1, 1, 1, 1, 1, 2), False),
+        ((9, 9, 9, 0, 0, 0), False),
         ((9, 1, 1, 1, 1, 1), False),
     ],
 )
@@ -25,7 +25,6 @@ def test_examples(digits, expected):
 
 
 def test_matches_brute_force():
-    # проверяем на всех мультимножествах из цифр 0, 1, 5, 9
     for digits in product((0, 1, 5, 9), repeat=6):
         assert can_be_lucky(digits) == brute_force(digits)
 

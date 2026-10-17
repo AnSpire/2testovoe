@@ -1,10 +1,3 @@
-"""Задание 2: можно ли из шести цифр собрать счастливый билет.
-
-Билет счастливый, если сумма первых трёх цифр равна сумме последних трёх.
-Цифры можно переставлять, поэтому задача сводится к вопросу: можно ли
-разбить шесть цифр на две тройки с равными суммами.
-"""
-
 from itertools import combinations
 
 
@@ -24,7 +17,6 @@ def can_be_lucky(digits: tuple[int, ...]) -> bool:
 
 
 def make_lucky(digits: tuple[int, ...]) -> tuple[int, ...] | None:
-    """Возвращает пример счастливого билета из этих цифр или None."""
     if not can_be_lucky(digits):
         return None
     half = sum(digits) // 2
@@ -32,7 +24,7 @@ def make_lucky(digits: tuple[int, ...]) -> tuple[int, ...] | None:
         if sum(digits[i] for i in triple) == half:
             rest = [i for i in range(6) if i not in triple]
             return tuple(digits[i] for i in (*triple, *rest))
-    return None  # недостижимо
+    return None
 
 
 if __name__ == "__main__":

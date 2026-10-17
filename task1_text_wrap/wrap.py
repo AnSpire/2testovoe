@@ -1,14 +1,7 @@
-"""Задание 1: перенос текста по словам, не более 70 символов в строке."""
-
 MAX_WIDTH = 70
 
 
 def wrap_paragraph(paragraph: str, width: int = MAX_WIDTH) -> list[str]:
-    """Разбивает один абзац на строки длиной не более width символов.
-
-    Слова не разрываются. Если слово само длиннее width, оно
-    помещается на отдельную строку целиком.
-    """
     lines: list[str] = []
     current = ""
     for word in paragraph.split():
@@ -25,7 +18,6 @@ def wrap_paragraph(paragraph: str, width: int = MAX_WIDTH) -> list[str]:
 
 
 def format_text(text: str, width: int = MAX_WIDTH) -> str:
-    """Форматирует текст, сохраняя исходное деление на абзацы."""
     if width < 1:
         raise ValueError("width должен быть положительным")
     return "\n".join(

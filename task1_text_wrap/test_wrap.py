@@ -22,7 +22,6 @@ def test_words_are_not_broken():
 
 def test_lines_are_filled_greedily():
     lines = format_text(LONG_TEXT).splitlines()
-    # первое слово следующей строки не помещалось в предыдущую
     for prev, nxt in zip(lines, lines[1:]):
         assert len(prev) + 1 + len(nxt.split()[0]) > MAX_WIDTH
 
@@ -32,7 +31,7 @@ def test_short_text_unchanged():
 
 
 def test_exact_width_fits_on_one_line():
-    text = "a" * 35 + " " + "b" * 34  # ровно 70 символов
+    text = "a" * 35 + " " + "b" * 34
     assert format_text(text) == text
 
 

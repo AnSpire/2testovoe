@@ -1,16 +1,9 @@
-"""Задание 3: получить значение из вложенной структуры по пути вида 'a.b.c'."""
-
 from typing import Any
 
 _MISSING = object()
 
 
 def get_by_path(obj: Any, path: str, default: Any = None) -> Any:
-    """Возвращает элемент вложенной структуры по пути из ключей через точку.
-
-    Поддерживаются словари и списки (для списков ключом служит индекс).
-    Если пути нет, возвращается default.
-    """
     current = obj
     for key in path.split("."):
         if isinstance(current, dict):
@@ -35,6 +28,6 @@ if __name__ == "__main__":
             },
         },
     }
-    print(get_by_path(data, "a.b.c"))  # +++
-    print(get_by_path(data, "a.b"))  # {'c': '+++'}
-    print(get_by_path(data, "a.x.c"))  # None
+    print(get_by_path(data, "a.b.c"))
+    print(get_by_path(data, "a.b"))
+    print(get_by_path(data, "a.x.c"))

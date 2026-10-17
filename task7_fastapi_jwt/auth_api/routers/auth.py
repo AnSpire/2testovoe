@@ -1,11 +1,16 @@
 from fastapi import APIRouter, HTTPException, status
 
-from ..dependencies import StorageDep
-from ..schemas import Token, UserLogin, UserPublic, UserRegister
-from ..security import create_access_token, hash_password, verify_password
-from ..storage import UserAlreadyExists
+from ..dependencies import SessionsDep, StorageDep, decode_or_401, unauthorized
+from ..schemas import RefreshRequest, Token, UserLogin, UserPublic, UserRegister
+from ..security import TokenType, create_token_pair, hash_password, verify_password
+from ..storage import RefreshTokenReused, SessionRevoked, UserAlreadyExists
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+
+def _issue(username: str, session_id: str, refresh_jti: str) -> Token:
+    access, refresh = create_token_pair(username, session_id, refresh_jti)
+    return Token(access_token=access, refresh_token=refresh)
 
 
 @router.post("/register", response_model=UserPublic, status_code=status.HTTP_201_CREATED)
@@ -20,12 +25,29 @@ def register(data: UserRegister, storage: StorageDep) -> UserPublic:
 
 
 @router.post("/login", response_model=Token)
-def login(data: UserLogin, storage: StorageDep) -> Token:
+def login(data: UserLogin, storage: StorageDep, sessions: SessionsDep) -> Token:
     user = storage.get_by_username(data.username)
     if user is None or not verify_password(data.password, user.password_hash):
-        raise HTTPException(
-            status.HTTP_401_UNAUTHORIZED,
-            detail="Неверное имя пользователя или пароль",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    return Token(access_token=create_access_token(user.username))
+        raise unauthorized("Неверное имя пользователя или пароль")
+    session = sessions.create(user.username)
+    return _issue(user.username, session.id, session.refresh_jti)
+
+
+@router.post("/refresh", response_model=Token)
+def refresh(data: RefreshRequest, storage: StorageDep, sessions: SessionsDep) -> Token:
+    claims = decode_or_401(data.refresh_token, TokenType.REFRESH)
+    try:
+        new_jti = sessions.rotate(claims.sid, claims.jti)
+    except SessionRevoked:
+        raise unauthorized("Сессия отозвана")
+    except RefreshTokenReused:
+        raise unauthorized("Refresh-токен уже использован, сессия отозвана")
+    if storage.get_by_username(claims.sub) is None:
+        raise unauthorized("Пользователь не найден")
+    return _issue(claims.sub, claims.sid, new_jti)
+
+
+@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
+def logout(data: RefreshRequest, sessions: SessionsDep) -> None:
+    claims = decode_or_401(data.refresh_token, TokenType.REFRESH)
+    sessions.revoke(claims.sid)

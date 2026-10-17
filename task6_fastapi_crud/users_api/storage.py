@@ -1,5 +1,3 @@
-"""Хранилище пользователей в памяти (список)."""
-
 from itertools import count
 
 from .schemas import User, UserCreate, UserUpdate

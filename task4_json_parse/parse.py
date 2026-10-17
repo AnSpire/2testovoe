@@ -1,5 +1,3 @@
-"""Задание 4: распарсить JSON-строку в python-объект."""
-
 import json
 
 inData = '{"one": ["http", "yandex.ru"], "two": ["https", "google.com"]}'
